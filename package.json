@@ -1,0 +1,23 @@
+{
+  "name": "coren_proxy",
+  "version": "0.0.1",
+  "description": "Proxy server that sits in front of Coren",
+  "main": "proxy.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IngenuityEngine/coren_proxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "server"
+  ],
+  "author": "Grant Miller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IngenuityEngine/coren_proxy/issues"
+  },
+  "homepage": "https://github.com/IngenuityEngine/coren_proxy#readme"
+}
