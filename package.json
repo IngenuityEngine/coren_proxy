@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/IngenuityEngine/coren_proxy/issues"
   },
-  "homepage": "https://github.com/IngenuityEngine/coren_proxy#readme"
+  "homepage": "https://github.com/IngenuityEngine/coren_proxy#readme",
+  "dependencies": {
+    "http-proxy": "^1.11.1"
+  }
 }
