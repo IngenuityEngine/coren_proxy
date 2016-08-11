@@ -10,7 +10,8 @@ def main(baseCommand, startingPort, count):
 		if sys.platform.startswith('win'):
 			process = subprocess.Popen(command, creationflags=subprocess.CREATE_NEW_CONSOLE)
 		else:
-			process = subprocess.Popen(command, shell=True)
+			linuxCommand = 'xterm -e "%s"' % command
+			process = subprocess.Popen(linuxCommand, shell=True)
 		procs.append(process)
 		time.sleep(1)
 
