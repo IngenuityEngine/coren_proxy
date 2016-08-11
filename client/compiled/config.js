@@ -5,7 +5,6 @@ module.exports = {
         "brand": "Coren",
         "title": "Coren :: Schema and REST",
         "description": "Simple site management",
-        "author": "Grant Miller",
         "css": [
             "/css/base.css"
         ],
@@ -16,13 +15,28 @@ module.exports = {
         "apps": {
             "coren_backendAppView": "node_modules/coren/shared/components/coren_backend"
         },
-        "port": 2150,
+        "rootUrl": "http://127.0.0.1",
+        "port": 2032,
         "fonts": [
             "http://fonts.googleapis.com/css?family=Roboto:100,300,400,500"
-        ]
+        ],
+        "socketPort": 2250,
+        "socketUrl": "/sockets",
+        "useTemplates": true,
+        "useServer": true,
+        "useApps": true,
+        "enableSockets": false
     },
     "coren": {
+        "apiRoot": "/api",
+        "loginUrl": "/login",
+        "loginFailedUrl": "/login/failed",
+        "loginRedirect": "/",
+        "logoutUrl": "/logout",
         "useBackend": true,
+        "undo": true,
+        "authenticateURLs": false,
+        "authenticateAPI": false,
         "dataTypes": {
             "checkbox": {
                 "model": "checkboxFieldModel",
@@ -51,7 +65,17 @@ module.exports = {
             "json": {},
             "status": {},
             "text": {},
-            "image": {}
+            "time": {},
+            "image": {},
+            "orderedListSelection": {},
+            "array": {},
+            "nestedEntities": {}
         }
+    },
+    "ui": {
+        "doubleClickTimeout": 300,
+        "clickThreshold": 10,
+        "flickThreshold": 10,
+        "defaultKeyNamespace": "app"
     }
 }

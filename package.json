@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/IngenuityEngine/coren_proxy#readme",
   "dependencies": {
-    "http-proxy": "^1.11.1"
+    "http-proxy": "^1",
+    "lodash": "^4.14.2",
+    "optimist": "^0.6.1"
   }
 }
