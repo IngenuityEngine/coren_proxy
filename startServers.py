@@ -1,14 +1,7 @@
-# import os
+
 import sys
 import time
-
 import subprocess
-
-import arkInit
-arkInit.init()
-
-# import cOS
-
 
 def main(baseCommand, startingPort, count):
 	procs = []
