@@ -7,7 +7,10 @@ def main(baseCommand, startingPort, count):
 	procs = []
 	for i in range(1,count + 1):
 		command = baseCommand + ' ' + str(startingPort + i)
-		process = subprocess.Popen(command, creationflags=subprocess.CREATE_NEW_CONSOLE)
+		if sys.platform.startswith('win'):
+			process = subprocess.Popen(command, creationflags=subprocess.CREATE_NEW_CONSOLE)
+		else:
+			process = subprocess.Popen(command, shell=True)
 		procs.append(process)
 		time.sleep(1)
 
