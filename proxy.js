@@ -8,12 +8,14 @@ config = _.merge(config, args)
 console.log('Config:')
 console.log(config)
 
-var port
-var servers = _.map(_.range(config.serverCount), function(i)
-{
-	port = config.startingPort + i + 1
-	return config.baseUrl + ':' + port
-})
+// var port
+// var servers = _.map(_.range(config.serverCount), function(i)
+// {
+// 	port = config.startingPort + i + 1
+// 	return config.baseUrl + ':' + port
+// })
+
+var servers = config.urls
 
 console.log('Proxy URLs:', servers)
 
