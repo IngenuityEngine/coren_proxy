@@ -13,7 +13,7 @@ def main(baseCommand, startingPort, count):
 			linuxCommand = 'xterm -hold -e "%s"' % command
 			process = subprocess.Popen(linuxCommand, shell=True)
 		procs.append(process)
-		time.sleep(5)
+		time.sleep(3)
 
 	try:
 		input('Enter to exit from Python script...')
