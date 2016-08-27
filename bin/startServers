@@ -1,2 +1,1 @@
-python ../coren_proxy/startServers.py "node ../coren/server/cli.js --quickStart --basics.port" 2000 16
-
+python ../coren_proxy/startServers.py "node ../coren/server/cli.js --quickStart --basics.port" 2000 32
