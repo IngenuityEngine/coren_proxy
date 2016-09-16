@@ -1,1 +1,1 @@
-node proxy.js --serverCount 16
+node proxy.js --serverCount 32
