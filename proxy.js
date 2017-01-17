@@ -33,14 +33,14 @@ function loadBalanceProxy(req, res)
 	}, function(err)
 	{
 		if (err)
-			console.log('Error:', err)
+			console.log('\n\nError:', err)
 		loadBalanceProxy(req, res)
 	})
 }
 
 var server = http.createServer(function(req, res)
 {
-	console.log(req.headers)
+	// console.log(req.headers)
 	_.each(req.headers, function(val, key)
 	{
 		req.headers[key] = val.replace(/[^A-Za-z0-9\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g, '')
