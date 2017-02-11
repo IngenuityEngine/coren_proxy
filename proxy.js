@@ -14,7 +14,7 @@ console.log(config)
 // 	port = config.startingPort + i + 1
 // 	return config.baseUrl + ':' + port
 // })
-
+var headerRegex = new RegExp(/[^A-Za-z0-9_\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g)
 var servers = config.urls
 
 console.log('Proxy URLs:', servers)
@@ -22,30 +22,30 @@ console.log('Proxy URLs:', servers)
 var proxy = httpProxy.createProxyServer()
 
 var currentServer = 0
-function loadBalanceProxy(req, res)
+function loadBalanceProxy(request, response)
 {
 	var index = currentServer % servers.length
 	currentServer += 1
 	var target = servers[index]
-	proxy.web(req, res,
+	proxy.web(request, response,
 	{
 		target: target
 	}, function(err)
 	{
 		if (err)
 			console.log('\n\nError:', err)
-		loadBalanceProxy(req, res)
+		loadBalanceProxy(request, response)
 	})
 }
 
-var server = http.createServer(function(req, res)
+var server = http.createServer(function(request, response)
 {
-	// console.log(req.headers)
-	_.each(req.headers, function(val, key)
+	// console.log(request.headers)
+	_.each(request.headers, function(val, key)
 	{
-		req.headers[key] = val.replace(/[^A-Za-z0-9\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g, '')
+		request.headers[key] = val.replace(headerRegex, '')
 	})
-	loadBalanceProxy(req, res)
+	loadBalanceProxy(request, response)
 })
 
 server.listen(config.port)
