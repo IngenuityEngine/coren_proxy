@@ -14,9 +14,11 @@ var userConfigPath = userHome + 'config/proxy.js'
 try {
 	userConfig = require(userConfigPath)
 } catch (err) {
-	console.log('could not find user config:', userConfigPath)
+	console.log('\n\n\nERROR: could not find user config:', userConfigPath)
 }
 
+delete args._
+delete args.$0
 config = _.merge(config, userConfig, args)
 console.log('Config:')
 console.log(config)
@@ -28,15 +30,20 @@ console.log(config)
 // 	return config.baseUrl + ':' + port
 // })
 var headerRegex = new RegExp(/[^A-Za-z0-9_\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g)
-var servers = config.urls
+var servers = []
 
-console.log('Proxy URLs:', servers)
+// console.log('Proxy URLs:', servers)
 
 var proxy = httpProxy.createProxyServer()
 
 var currentServer = 0
 function loadBalanceProxy(request, response)
 {
+	if (!servers.length)
+	{
+		console.log('\n\nError: No servers online!')
+		return
+	}
 	var index = currentServer % servers.length
 	currentServer += 1
 	var target = servers[index]
@@ -106,6 +113,8 @@ var server = http.createServer(function(request, response)
 			response.writeHead(200, {'Content-Type': 'application/json'})
 			response.write(JSON.stringify(responseData))
 			response.end()
+
+			servers.push(data.url)
 			return
 		})
 	}
