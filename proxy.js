@@ -9,6 +9,11 @@ var userHome = cOS.getUserHome()
 console.log('home directory:', userHome)
 
 var config = require('./config/default.js')
+
+var testConfig = {}
+if (process.env.mode && process.env.mode == 'test')
+	testConfig = require('./config/test.js')
+
 var userConfig = {}
 var userConfigPath = userHome + 'config/proxy.js'
 try {
@@ -19,7 +24,7 @@ try {
 
 delete args._
 delete args.$0
-config = _.merge(config, userConfig, args)
+config = _.merge(config, testConfig, userConfig, args)
 console.log('Config:')
 console.log(config)
 
@@ -41,7 +46,11 @@ function loadBalanceProxy(request, response)
 {
 	if (!servers.length)
 	{
-		console.log('\n\nError: No servers online!')
+		var err = 'Error: No servers online!'
+		console.log(err)
+		response.writeHead(500, {'Content-Type': 'text/html'})
+		response.write(err)
+		response.end()
 		return
 	}
 	var index = currentServer % servers.length
@@ -68,7 +77,7 @@ var server = http.createServer(function(request, response)
 
 	if (request.url == '/_proxy/addServer' && request.method == 'POST')
 	{
-		console.log('Adding server')
+		console.log('\nAdding server')
 		var body = ''
 
 		request.on('data', function (data) {
@@ -83,8 +92,6 @@ var server = http.createServer(function(request, response)
 		request.on('end', function ()
 		{
 			var data = arkUtil.parseJSON(body)
-			console.log(data)
-
 			var err
 			if (!data ||
 				!_.isObject(data) ||
@@ -114,6 +121,7 @@ var server = http.createServer(function(request, response)
 			response.write(JSON.stringify(responseData))
 			response.end()
 
+			console.log(data.url)
 			servers.push(data.url)
 			return
 		})
