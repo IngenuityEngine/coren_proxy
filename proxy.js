@@ -25,26 +25,21 @@ try {
 delete args._
 delete args.$0
 config = _.merge(config, testConfig, userConfig, args)
-console.log('Config:')
-console.log(config)
+// console.log('Config:')
+// console.log(config)
 
-// var port
-// var servers = _.map(_.range(config.serverCount), function(i)
-// {
-// 	port = config.startingPort + i + 1
-// 	return config.baseUrl + ':' + port
-// })
 var headerRegex = new RegExp(/[^A-Za-z0-9_\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g)
 var servers = []
-
-// console.log('Proxy URLs:', servers)
 
 var proxy = httpProxy.createProxyServer()
 
 var currentServer = 0
+
 function loadBalanceProxy(request, response)
 {
-	if (!servers.length)
+	// if we have no servers
+	// or we've tried more times than we have servers
+	if (!servers.length || request._coren_proxyTries >= servers.length)
 	{
 		var err = 'Error: No servers online!'
 		console.log(err)
@@ -53,16 +48,30 @@ function loadBalanceProxy(request, response)
 		response.end()
 		return
 	}
+
+	request._coren_proxyTries += 1
 	var index = currentServer % servers.length
 	currentServer += 1
 	var target = servers[index]
+	if (!target.online)
+	{
+		console.log('server not online:', target.url)
+		return loadBalanceProxy(request, response)
+	}
 	proxy.web(request, response,
 	{
-		target: target
+		target: target.url
 	}, function(err)
 	{
 		if (err)
 			console.log('\n\nError:', err)
+
+		// remove the server from the list
+		// servers.splice(index,1)
+		// currentServer -= 1
+		// set online = false
+		servers[index].online = false
+		servers[index].lastError = err
 		loadBalanceProxy(request, response)
 	})
 }
@@ -73,11 +82,10 @@ var server = http.createServer(function(request, response)
 	{
 		request.headers[key] = val.replace(headerRegex, '')
 	})
-	console.log('request.url:', request.url)
 
+	// register proxy
 	if (request.url == '/_proxy/addServer' && request.method == 'POST')
 	{
-		console.log('\nAdding server')
 		var body = ''
 
 		request.on('data', function (data) {
@@ -114,27 +122,50 @@ var server = http.createServer(function(request, response)
 				response.end()
 				return
 			}
+			var index = -1
+			_.each(servers, function(info, i)
+			{
+				if (info.url == data.url)
+					index = i
+			})
 
 			var responseData = {registered: 1}
-
 			response.writeHead(200, {'Content-Type': 'application/json'})
 			response.write(JSON.stringify(responseData))
 			response.end()
 
-			console.log(data.url)
-			servers.push(data.url)
+			// if we're re-registering a server
+			// just set it back to online
+			if (index != -1)
+			{
+				console.log('\nUpdating server:', data.url)
+				servers[index].online = true
+			}
+			// otherwise add the new server
+			else
+			{
+				console.log('\nAdding server:', data.url)
+				servers.push({
+					url: data.url,
+					online: true,
+					lastError: null,
+				})
+			}
 			return
 		})
 	}
+	// proxy status
 	else if (request.url == '/_proxy/status')
 	{
-		var data = {'tacos': true}
 		response.writeHead(200, {'Content-Type': 'application/json'})
-		response.write(JSON.stringify(data))
+		response.write(JSON.stringify(servers))
 		response.end()
 	}
+	// proxy
 	else
 	{
+		console.log('request.url:', request.url)
+		request._coren_proxyTries = 0
 		loadBalanceProxy(request, response)
 	}
 })
