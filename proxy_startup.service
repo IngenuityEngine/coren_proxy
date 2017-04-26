@@ -1,0 +1,13 @@
+[Service]
+WorkingDirectory=/var/www/coren_proxy
+ExecStart=/usr/local/n/versions/node/6.8.1/bin/node ./proxy.js
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=proxy_startup
+User=root
+Group=root
+Environment='NODE_ENV=production'
+
+[Install]
+WantedBy=multi-user.target
