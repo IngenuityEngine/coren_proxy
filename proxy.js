@@ -28,7 +28,7 @@ config = _.merge(config, testConfig, userConfig, args)
 // console.log('Config:')
 // console.log(config)
 
-var headerRegex = new RegExp(/[^A-Za-z0-9_\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g)
+var headerRegex = new RegExp(/[^A-Za-z0-9_\.\(\)<>\@\,\;\:\\\/\[\]\?\=\{\}]/g)
 var servers = []
 
 var proxy = httpProxy.createProxyServer()
@@ -58,6 +58,7 @@ function loadBalanceProxy(request, response)
 		console.log('server not online:', target.url)
 		return loadBalanceProxy(request, response)
 	}
+
 	proxy.web(request, response,
 	{
 		target: target.url
