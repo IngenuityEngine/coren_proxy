@@ -158,7 +158,7 @@ Linux requires a bunch of setup before you even start installing node.js, etc.
 ##### Windows
 1. Download and install [mongoDB](https://www.mongodb.org/downloads)
 2. Extract download to C:\mongodb\
-3. From an administrator prompt run install_mongo.bat from the Coren root. It's contents:
+3. Run install_mongo.bat from the Coren root. It's contents:
 ```
 	mkdir C:\mongodb\log\
 	mkdir C:\mongodb\database

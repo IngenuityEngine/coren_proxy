@@ -58,51 +58,22 @@ function loadBalanceProxy(request, response)
 		console.log('server not online:', target.url)
 		return loadBalanceProxy(request, response)
 	}
-
-	function proxyRequest()
+	proxy.web(request, response,
 	{
-		proxy.web(request, response,
-		{
-			target: target.url
-		}, function(err)
-		{
-			if (err)
-				console.log('\n\nError:', err)
-
-			// remove the server from the list
-			// servers.splice(index,1)
-			// currentServer -= 1
-			// set online = false
-			servers[index].online = false
-			servers[index].lastError = err
-			loadBalanceProxy(request, response)
-		})
-	}
-
-	if (request.method == 'POST')
+		target: target.url
+	}, function(err)
 	{
-		var body = ''
+		if (err)
+			console.log('\n\nError:', err)
 
-		request.on('data', function (data)
-		{
-			body += data
-
-			// Too much POST data, kill the connection!
-			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-			if (body.length > 1e6)
-				request.connection.destroy()
-		})
-		request.on('end', function ()
-		{
-			request.rawBody = body
-			request.body = arkUtil.parseJSON(body)
-			return proxyRequest()
-		})
-	}
-	else
-	{
-		proxyRequest()
-	}
+		// remove the server from the list
+		// servers.splice(index,1)
+		// currentServer -= 1
+		// set online = false
+		servers[index].online = false
+		servers[index].lastError = err
+		loadBalanceProxy(request, response)
+	})
 }
 
 var server = http.createServer(function(request, response)
@@ -117,8 +88,7 @@ var server = http.createServer(function(request, response)
 	{
 		var body = ''
 
-		request.on('data', function (data)
-		{
+		request.on('data', function (data) {
 			body += data
 
 			// Too much POST data, kill the connection!
